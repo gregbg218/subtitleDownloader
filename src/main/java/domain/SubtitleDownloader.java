@@ -8,6 +8,7 @@ import org.jsoup.select.Elements;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -18,35 +19,36 @@ public class SubtitleDownloader {
     Scanner sc = new Scanner(System.in);
 
     public void download (){
-        String searchURL = getSearchURL();
         System.out.println("Enter destination path");
         String destPath = sc.nextLine().trim();
+        String searchURL = getSearchURL();
         try
         {
-            downloadFile(new URL(extractDownloadURL(searchURL)),destPath+"//test.zip");
+            downloadFile(new URL(chooseFile(searchURL)),destPath+"\\test.zip");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        unzip(destPath+"//test.zip", destPath);
-        new File(destPath+"//test.zip").delete();
+        unzip(destPath+"\\test.zip", destPath);
+        new File(destPath+"\\test.zip").delete();
     }
 
     public String getSearchURL()
     {
         String finalURL = "";
+        String name = "";
         System.out.println("Choose Movie(M) or TV Series(T)");
         if(sc.nextLine().toLowerCase().equals("m"))
         {
             System.out.println("Enter movie name");
-            String movieName = sc.nextLine().trim().toLowerCase().replace(' ','+');
-            finalURL =URL + movieName + "&movie_type=movie&seasons=&episodes=&year=&type=";
+            name = sc.nextLine().trim().toLowerCase().replace(' ','+');
+            finalURL =URL + name + "&movie_type=movie&seasons=&episodes=&year=&type=";
         }
         else
         {
             System.out.println("Enter tv series name");
-            String seriesName = sc.nextLine().trim().toLowerCase().replace(' ','+');
+            name= sc.nextLine().trim().toLowerCase().replace(' ','+');
 //        String seriesName = "reservation+dogs";
 
             String type ="&movie_type=tv-series&";
@@ -58,7 +60,7 @@ public class SubtitleDownloader {
             System.out.println("Enter episode number");
             String episodeNo = "episodes="+sc.nextLine().trim()+"&year=";
 
-            finalURL = URL + seriesName + type + seasonNo + episodeNo;
+            finalURL = URL + name + type + seasonNo + episodeNo;
 
         }
 
@@ -70,7 +72,8 @@ public class SubtitleDownloader {
         return finalURL;
     }
 
-    public String extractDownloadURL(String searchURL)
+
+    public String chooseFile(String searchURL)
     {
         Document doc = null;
         try
@@ -81,12 +84,19 @@ public class SubtitleDownloader {
         {
             System.out.println(io);
         }
-        //table table-striped table-hover
         Element table  = doc.getElementsByClass("table table-striped table-hover").first();
-        Element td = table.getElementsByTag("td").first();
-        Elements links = td.select("a[href]");
-        String downloadURL = "https://www.podnapisi.net"+links.last().attr("href")+"/download";
-        System.out.println(downloadURL);
+        Elements body = table.select("tbody");
+        Elements rows = body.select("tr");
+        ArrayList<String> links = new ArrayList<String>();
+        for(int i=0;i< rows.size();i++)
+        {
+            Element td = rows.get(i).select("td").first();
+            System.out.println(i+")  "+td.text());
+            links.add(td.select("a[href]").first().attr("href"));
+        }
+        System.out.println("Choose file number");
+        int fileNo = sc.nextInt();
+        String downloadURL = "https://www.podnapisi.net"+links.get(fileNo);
         return downloadURL;
     }
 
@@ -130,5 +140,10 @@ public class SubtitleDownloader {
         }
 
     }
+
+//    public static void main(String[] args) {
+//        SubtitleDownloader sd = new SubtitleDownloader();
+//        sd.chooseOption("https://www.podnapisi.net/en/subtitles/search/?keywords=penny+dreadful&movie_type=tv-series&seasons=1&episodes=&year=");
+//    }
 
 }
