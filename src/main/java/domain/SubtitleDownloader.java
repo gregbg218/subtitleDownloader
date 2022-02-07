@@ -20,6 +20,7 @@ public class SubtitleDownloader {
 
     public void download (){
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
+        System.out.println();
 //        System.out.println("Enter destination path");
 //        String destPath = sc.nextLine().trim();
         String destPath = System.getProperty("user.dir");
@@ -43,24 +44,30 @@ public class SubtitleDownloader {
         System.out.println("Choose Movie(M) or TV Series(T)");
         if(sc.nextLine().toLowerCase().equals("m"))
         {
+            System.out.println();
             System.out.println("Enter movie name");
             name = sc.nextLine().trim().toLowerCase().replace(' ','+');
+            System.out.println();
             finalURL =URL + name + "&movie_type=movie&seasons=&episodes=&year=&type=";
         }
         else
         {
+            System.out.println();
             System.out.println("Enter tv series name");
             name= sc.nextLine().trim().toLowerCase().replace(' ','+');
+            System.out.println();
 //        String seriesName = "reservation+dogs";
 
             String type ="&movie_type=tv-series&";
 
             System.out.println("Enter Season number");
             String seasonNo = "seasons="+sc.nextLine().trim()+"&";
+            System.out.println();
 //        String seasonNo = "1&";
 
             System.out.println("Enter episode number");
             String episodeNo = "episodes="+sc.nextLine().trim()+"&year=";
+            System.out.println();
 
             finalURL = URL + name + type + seasonNo + episodeNo;
 
@@ -71,6 +78,7 @@ public class SubtitleDownloader {
         //https://www.podnapisi.net/en/subtitles/search/?keywords=Only+Murders+in+the+Building&movie_type=tv-series&seasons=1&episodes=&year=
         // https://www.podnapisi.net/en/subtitles/search/?keywords=reservation+dogs&movie_type=&seasons=1&episodes=&year=&type=
         System.out.println(finalURL);
+        System.out.println();
         return finalURL;
     }
 
@@ -98,6 +106,7 @@ public class SubtitleDownloader {
         }
         System.out.println("Choose file number");
         int fileNo = sc.nextInt();
+        System.out.println();
         String downloadURL = "https://www.podnapisi.net"+links.get(fileNo);
         return downloadURL;
     }
