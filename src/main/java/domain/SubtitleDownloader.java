@@ -19,19 +19,21 @@ public class SubtitleDownloader {
     Scanner sc = new Scanner(System.in);
 
     public void download (){
-        System.out.println("Enter destination path");
-        String destPath = sc.nextLine().trim();
+        System.out.println("Working Directory = " + System.getProperty("user.dir"));
+//        System.out.println("Enter destination path");
+//        String destPath = sc.nextLine().trim();
+        String destPath = System.getProperty("user.dir");
         String searchURL = getSearchURL();
         try
         {
-            downloadFile(new URL(chooseFile(searchURL)),destPath+"\\test.zip");
+            downloadFile(new URL(chooseFile(searchURL)),destPath+File.separator+"test.zip");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        unzip(destPath+"\\test.zip", destPath);
-        new File(destPath+"\\test.zip").delete();
+        unzip(destPath+File.separator+"test.zip", destPath);
+        new File(destPath+File.separator+"test.zip").delete();
     }
 
     public String getSearchURL()
