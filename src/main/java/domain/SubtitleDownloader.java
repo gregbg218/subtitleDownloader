@@ -21,8 +21,6 @@ public class SubtitleDownloader {
     public void download (){
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
         System.out.println();
-//        System.out.println("Enter destination path");
-//        String destPath = sc.nextLine().trim();
         String destPath = System.getProperty("user.dir");
         String searchURL = getSearchURL();
         try
@@ -45,25 +43,21 @@ public class SubtitleDownloader {
         if(sc.nextLine().toLowerCase().equals("m"))
         {
             System.out.println();
-            System.out.println("Enter movie name");
-            name = sc.nextLine().trim().toLowerCase().replace(' ','+');
+            name = getName().trim().replace(' ','+');
             System.out.println();
             finalURL =URL + name + "&movie_type=movie&seasons=&episodes=&year=&type=";
         }
         else
         {
             System.out.println();
-            System.out.println("Enter tv series name");
-            name= sc.nextLine().trim().toLowerCase().replace(' ','+');
+            name = getName().trim().replace(' ','+');
             System.out.println();
-//        String seriesName = "reservation+dogs";
 
             String type ="&movie_type=tv-series&";
 
             System.out.println("Enter Season number");
             String seasonNo = "seasons="+sc.nextLine().trim()+"&";
             System.out.println();
-//        String seasonNo = "1&";
 
             System.out.println("Enter episode number");
             String episodeNo = "episodes="+sc.nextLine().trim()+"&year=";
@@ -80,6 +74,30 @@ public class SubtitleDownloader {
         System.out.println(finalURL);
         System.out.println();
         return finalURL;
+    }
+
+    public String getName()
+    {
+        String source[] = System.getProperty("user.dir").split(File.separator);
+        String name = source[source.length-1].toLowerCase();
+
+        if(name.contains("season"))
+        {
+            name = name.substring(0,name.indexOf("season"));
+        }
+
+        if (name.contains("s0"))
+        {
+            name = name.substring(0,name.indexOf("s0"));
+        }
+
+        if(name.contains("("))
+        {
+            name = name.substring(0,name.indexOf("("));
+        }
+        name=name.replace(".","").replace("-","");
+        System.out.println(name);
+        return name;
     }
 
 
@@ -117,10 +135,8 @@ public class SubtitleDownloader {
 
     public void unzip(String zipFilePath, String destDir) {
         File dir = new File(destDir);
-        // create output directory if it doesn't exist
         if(!dir.exists()) dir.mkdirs();
         FileInputStream fis;
-        //buffer for read and write data to file
         byte[] buffer = new byte[1024];
         try {
             fis = new FileInputStream(zipFilePath);
@@ -130,7 +146,6 @@ public class SubtitleDownloader {
                 String fileName = ze.getName();
                 File newFile = new File(destDir + File.separator + fileName);
                 System.out.println("Unzipping to "+newFile.getAbsolutePath());
-                //create directories for sub directories in zip
                 new File(newFile.getParent()).mkdirs();
                 FileOutputStream fos = new FileOutputStream(newFile);
                 int len;
@@ -138,11 +153,10 @@ public class SubtitleDownloader {
                     fos.write(buffer, 0, len);
                 }
                 fos.close();
-                //close this ZipEntry
                 zis.closeEntry();
                 ze = zis.getNextEntry();
             }
-            //close last ZipEntry
+
             zis.closeEntry();
             zis.close();
             fis.close();
@@ -152,9 +166,5 @@ public class SubtitleDownloader {
 
     }
 
-//    public static void main(String[] args) {
-//        SubtitleDownloader sd = new SubtitleDownloader();
-//        sd.chooseOption("https://www.podnapisi.net/en/subtitles/search/?keywords=penny+dreadful&movie_type=tv-series&seasons=1&episodes=&year=");
-//    }
 
 }
